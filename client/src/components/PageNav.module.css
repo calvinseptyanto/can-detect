@@ -1,0 +1,31 @@
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.nav a:link,
+.nav a:visited {
+  text-decoration: none;
+  color: #4338ca;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.nav a:hover {
+  color: #6366f1;
+}
+
+.githubIcon:active,
+.githubIcon:link,
+.githubIcon:hover,
+.githubIcon:visited {
+  color: #4f46e5;
+}
