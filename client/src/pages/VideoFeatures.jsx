@@ -21,7 +21,7 @@ export default function FeaturesVideo() {
     // Create form data
     const formData = new FormData();
     if (typeof selectedVideo === "string") {
-      formData.append("filepath", selectedVideo.split("/").pop()); // Only send the filename
+      formData.append("filepath", selectedVideo);
     } else {
       formData.append("file", selectedVideo);
     }
@@ -36,8 +36,16 @@ export default function FeaturesVideo() {
         }, 2000);
       })
       .catch((error) => {
+        let errorMessage = "Error uploading video";
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.error
+        ) {
+          errorMessage = error.response.data.error;
+        }
         console.error("Error uploading video:", error);
-        alert(error.response?.data?.error || "Error uploading video");
+        alert(errorMessage);
       });
   };
 
@@ -56,45 +64,45 @@ export default function FeaturesVideo() {
         </p>
         <div className={styles.sampleAudios}>
           <video
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/angmo-vlog-singapore.mp4"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/angmo-vlog-singapore.mp4"
             autoplay
             className={styles.audio}
             onClick={() => {
               setSelectedVideo(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/angmo-vlog-singapore.mp4"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/angmo-vlog-singapore.mp4"
               );
               setPrediction(null);
             }}
           />
           <video
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/bd9a4f67c4-horse_20230905_180701_freemium.mp4"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/bd9a4f67c4-horse_20230905_180701_freemium.mp4"
             autoplay
             className={styles.audio}
             onClick={() => {
               setSelectedVideo(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/bd9a4f67c4-horse_20230905_180701_freemium.mp4"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/bd9a4f67c4-horse_20230905_180701_freemium.mp4"
               );
               setPrediction(null);
             }}
           />
           <video
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/dargoyaki-nus-vlog.mp4"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/dargoyaki-nus-vlog.mp4"
             autoplay
             className={styles.audio}
             onClick={() => {
               setSelectedVideo(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/dargoyaki-nus-vlog.mp4"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/dargoyaki-nus-vlog.mp4"
               );
               setPrediction(null);
             }}
           />
           <video
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/a11e9571e9-alien-invasion_20230905_183905_freemium.mp4"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/a11e9571e9-alien-invasion_20230905_183905_freemium.mp4"
             autoplay
             className={styles.audio}
             onClick={() => {
               setSelectedVideo(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/a11e9571e9-alien-invasion_20230905_183905_freemium.mp4"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/a11e9571e9-alien-invasion_20230905_183905_freemium.mp4"
               );
               setPrediction(null);
             }}

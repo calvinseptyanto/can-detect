@@ -21,7 +21,7 @@ export default function FeaturesVideo() {
     // Create form data
     const formData = new FormData();
     if (typeof selectedVideo === "string") {
-      formData.append("filepath", selectedVideo.split("/").pop()); // Only send the filename
+      formData.append("filepath", selectedVideo);
     } else {
       formData.append("file", selectedVideo);
     }
@@ -56,46 +56,46 @@ export default function FeaturesVideo() {
         </p>
         <div className={styles.sampleAudios}>
           <video
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/ANACONDA-interview.mp4"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/ANACONDA-interview.mp4"
             autoplay
             className={styles.audio}
             onClick={() => {
               setSelectedVideo(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/ANACONDA-interview.mp4"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/ANACONDA-interview.mp4"
               );
               setPrediction(null);
             }}
           />
           <video
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/223be94c4a-cat_20230905_175349_freemium.mp4"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/223be94c4a-cat_20230905_175349_freemium.mp4"
             autoplay
             className={styles.audio}
             onClick={() => {
               setSelectedVideo(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/223be94c4a-cat_20230905_175349_freemium.mp4"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/223be94c4a-cat_20230905_175349_freemium.mp4"
               );
               setPrediction(null);
             }}
           />
           <video
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/0621a9a217-thank-you_20230905_182713_freemium.mp4
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/0621a9a217-thank-you_20230905_182713_freemium.mp4
             "
             autoplay
             className={styles.audio}
             onClick={() => {
               setSelectedVideo(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/0621a9a217-thank-you_20230905_182713_freemium.mp4"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/0621a9a217-thank-you_20230905_182713_freemium.mp4"
               );
               setPrediction(null);
             }}
           />
           <video
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/smartest-kid.mp4"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/smartest-kid.mp4"
             autoplay
             className={styles.audio}
             onClick={() => {
               setSelectedVideo(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/smartest-kid.mp4"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/smartest-kid.mp4"
               );
               setPrediction(null);
             }}

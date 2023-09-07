@@ -21,7 +21,7 @@ export default function Features() {
     // Create form data
     const formData = new FormData();
     if (typeof selectedImage === "string") {
-      formData.append("filepath", selectedImage.split("/").pop()); // Only send the filename
+      formData.append("filepath", selectedImage);
     } else {
       formData.append("file", selectedImage);
     }
@@ -35,7 +35,7 @@ export default function Features() {
         setTimeout(() => {
           setIsLoading(false);
           setPrediction(response.data.message);
-        }, 3500);
+        }, 2000);
       })
       .catch((error) => {
         console.error("Error uploading image:", error);
@@ -58,109 +58,109 @@ export default function Features() {
         </p>
         <div className={styles.sampleImages}>
           <img
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-08-17_23-10-02.jpg"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-08-17_23-10-02.jpg"
             alt="Sample 1"
             className={styles.image}
             onClick={() => {
               setSelectedImage(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-08-17_23-10-02.jpg"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-08-17_23-10-02.jpg"
               );
               setPrediction(null);
             }}
           />
           <img
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-08-17_23-10-05.jpg"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-08-17_23-10-05.jpg"
             alt="Sample 2"
             className={styles.image}
             onClick={() => {
               setSelectedImage(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-08-17_23-10-05.jpg"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-08-17_23-10-05.jpg"
               );
               setPrediction(null);
             }}
           />
           <img
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-08-17_23-10-07.jpg"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-08-17_23-10-07.jpg"
             alt="Sample 3"
             className={styles.image}
             onClick={() => {
               setSelectedImage(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-08-17_23-10-07.jpg"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-08-17_23-10-07.jpg"
               );
               setPrediction(null);
             }}
           />
           <img
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-08-17_23-10-08.jpg"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-08-17_23-10-08.jpg"
             alt="Sample 4"
             className={styles.image}
             onClick={() => {
               setSelectedImage(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-08-17_23-10-08.jpg"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-08-17_23-10-08.jpg"
               );
               setPrediction(null);
             }}
           />
           <img
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/img000004.jpg"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/img000004.jpg"
             alt="Sample 5"
             className={styles.image}
             onClick={() => {
               setSelectedImage(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/img000004.jpg"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/img000004.jpg"
               );
               setPrediction(null);
             }}
           />
           <img
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-09-04_23-49-00.jpg"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-09-04_23-49-00.jpg"
             alt="Sample 6"
             className={styles.image}
             onClick={() => {
               setSelectedImage(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-09-04_23-49-00.jpg"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-09-04_23-49-00.jpg"
               );
               setPrediction(null);
             }}
           />
           <img
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-09-04_23-44-33.jpg"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-09-04_23-44-33.jpg"
             alt="Sample 7"
             className={styles.image}
             onClick={() => {
               setSelectedImage(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-09-04_23-44-33.jpg"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-09-04_23-44-33.jpg"
               );
               setPrediction(null);
             }}
           />
           <img
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-08-17_23-10-16.jpg"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-08-17_23-10-16.jpg"
             alt="Sample 8"
             className={styles.image}
             onClick={() => {
               setSelectedImage(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-08-17_23-10-16.jpg"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-08-17_23-10-16.jpg"
               );
               setPrediction(null);
             }}
           />
           <img
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-08-17_23-10-18.jpg"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-08-17_23-10-18.jpg"
             alt="Sample 9"
             className={styles.image}
             onClick={() => {
               setSelectedImage(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/photo_2023-08-17_23-10-18.jpg"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/photo_2023-08-17_23-10-18.jpg"
               );
               setPrediction(null);
             }}
           />
           <img
-            src="https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/img000026.jpg"
+            src="https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/img000026.jpg"
             onClick={() => {
               setSelectedImage(
-                "https://raw.githubusercontent.com/jiaawe/Anaconda-AI-ML-competition/main/flask-server/static/img000026.jpg"
+                "https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/img000026.jpg"
               );
               setPrediction(null);
             }}

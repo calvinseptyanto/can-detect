@@ -1,3 +1,4 @@
+from io import BytesIO
 from tensorflow.keras.models import load_model
 import numpy as np
 from PIL import Image
@@ -7,10 +8,22 @@ from flask_cors import CORS
 import os
 from joblib import load
 import cv2
+import tempfile
+import urllib.request
+from werkzeug.utils import secure_filename
+import requests
+
 
 import moviepy.editor as mp
 import librosa
 import tensorflow as tf
+
+import boto3
+from botocore.exceptions import NoCredentialsError
+
+AWS_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY_ID')
+AWS_SECRET_KEY = os.environ.get('AWS_SECRET_KEY')
+BUCKET_NAME = "can-detect-or-not-ah"  # Change this to your bucket name
 
 
 def preprocess_video(video_path):
@@ -25,6 +38,30 @@ def preprocess_video(video_path):
 # Importing deps for image prediction
 
 
+def upload_to_aws(file, s3_file_name):
+    s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY,
+                      aws_secret_access_key=AWS_SECRET_KEY)
+    try:
+        s3.upload_fileobj(file, BUCKET_NAME, s3_file_name)
+        print("Upload Successful")
+        return True
+    except NoCredentialsError:
+        print("Credentials not available")
+        return False
+
+
+def delete_from_aws(s3_file):
+    s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY,
+                      aws_secret_access_key=AWS_SECRET_KEY)
+    try:
+        s3.delete_object(Bucket=BUCKET_NAME, Key=s3_file)
+        print("Delete Successful")
+        return True
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
+
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 # Set TensorFlow to run only on CPU
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
@@ -35,8 +72,7 @@ audio_model = load('./model/audio.pkl')
 
 
 app = Flask(__name__)
-CORS(app, resources={
-     r"/*": {"origins": "https://can-detect-or-not-ah.netlify.app/"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 @app.route("/")
@@ -54,7 +90,7 @@ def upload_video():
         print('No file part.')
         # Handle the case for sample video
         if 'filepath' in request.form:
-            video_path = f"./static/{request.form['filepath'].split('/')[-1]}"
+            video_path = request.form['filepath']
         else:
             return jsonify({"error": "No video part in the request."}), 400
     else:
@@ -64,15 +100,19 @@ def upload_video():
             return jsonify({"error": "No video selected."}), 400
 
         try:
-            file.save('uploads/' + file.filename)
-            video_path = f"./uploads/{file.filename}"
+            file_obj = BytesIO(file.read())
+            upload_to_aws(file_obj, file.filename)
+            video_path = f"https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/{file.filename}"
         except Exception as e:
             print(e)
             return jsonify({"error": str(e)}), 500
 
     if video_path:
+        # Temporary file to download the video
+        temp_video_file = tempfile.NamedTemporaryFile(delete=False).name
         try:
-            cap = cv2.VideoCapture(video_path)
+            urllib.request.urlretrieve(video_path, temp_video_file)
+            cap = cv2.VideoCapture(temp_video_file)
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             frames_to_extract = np.random.choice(
                 total_frames, min(50, total_frames), replace=False)  # Extract 250 random frames
@@ -99,13 +139,11 @@ def upload_video():
                     else:
                         ai_count += 1
             image_score = image_score / len(frames_to_extract)
-            features = preprocess_video(video_path)
+            # Make sure this also uses the temp video file
+            features = preprocess_video(temp_video_file)
             prediction = audio_model.predict([features])
             print("Image Score: ", image_score)
             print("Audio Score: ", prediction)
-
-            if 'filepath' not in request.form and os.path.exists(video_path):
-                os.remove(video_path)
 
             majority_vote = "AI Generated" if ai_count > human_count else "Human Generated"
             if majority_vote == "AI Generated" or prediction < 0.5:
@@ -116,6 +154,10 @@ def upload_video():
         except Exception as e:
             print(e)
             return jsonify({"error": str(e)}), 500
+        finally:
+            # Clean up the temporary file
+            if os.path.exists(temp_video_file):
+                os.remove(temp_video_file)
     else:
         return jsonify({"error": "Unexpected error occurred."}), 500
 
@@ -124,44 +166,51 @@ def upload_video():
 def upload_audio():
     print(request.files)
     print(request.form)
-    video_path = None
+    audio_path = None
 
     if 'file' not in request.files:
         print('No file part.')
-        # Handle the case for sample video
-        if 'filepath' in request.form:
-            video_path = f"./static/{request.form['filepath'].split('/')[-1]}"
+        if 'filepath' in request.form:  # Handle the case for sample audio
+            audio_path = request.form['filepath']
         else:
-            return jsonify({"error": "No file part in the request."}), 400
+            return jsonify({"error": "No audio part in the request."}), 400
     else:
         file = request.files['file']
         if file.filename == '':
-            print('No file selected.')
-            return jsonify({"error": "No file selected."}), 400
+            print('No audio selected.')
+            return jsonify({"error": "No audio selected."}), 400
 
         try:
-            file.save('uploads/' + file.filename)
-            video_path = f"./uploads/{file.filename}"
+            file_obj = BytesIO(file.read())
+            upload_to_aws(file_obj, file.filename)
+            audio_path = f"https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/{file.filename}"
         except Exception as e:
             print(e)
             return jsonify({"error": str(e)}), 500
 
-    if video_path:
+    if audio_path:
+        # Temporary file to download the audio
+        temp_audio_file = tempfile.NamedTemporaryFile(delete=False).name
         try:
-            features = preprocess_video(video_path)
+            urllib.request.urlretrieve(audio_path, temp_audio_file)
+            # Assuming you'll need a function to preprocess audio similar to videos.
+            # Placeholder. Needs actual implementation.
+            features = preprocess_video(temp_audio_file)
             prediction = audio_model.predict([features])
-
-            if 'filepath' not in request.form and os.path.exists(video_path):
-                os.remove(video_path)
             print(prediction)
 
             if prediction >= 0.5:
                 return jsonify({"message": "Human Generated"})
             else:
                 return jsonify({"message": "AI Generated"})
+
         except Exception as e:
             print(e)
             return jsonify({"error": str(e)}), 500
+        finally:
+            # Clean up the temporary file
+            if os.path.exists(temp_audio_file):
+                os.remove(temp_audio_file)
     else:
         return jsonify({"error": "Unexpected error occurred."}), 500
 
@@ -176,7 +225,7 @@ def upload():
         print('No file part.')
         # Handle the case for sample image
         if 'filepath' in request.form:
-            img_path = f"./static/{request.form['filepath'].split('/')[-1]}"
+            img_path = request.form['filepath']
         else:
             return jsonify({"error": "No file part in the request."}), 400
     else:
@@ -186,25 +235,27 @@ def upload():
             return jsonify({"error": "No file selected."}), 400
 
         try:
-            file.save('uploads/' + file.filename)
-            img_path = f"./uploads/{file.filename}"
+            file_obj = BytesIO(file.read())
+            upload_to_aws(file_obj, file.filename)
+            img_path = f"https://can-detect-or-not-ah.s3.ap-southeast-1.amazonaws.com/{file.filename}"
         except Exception as e:
             print(e)
             return jsonify({"error": str(e)}), 500
 
     if img_path:
+        # Temporary file to download the image
+        temp_img_file = tempfile.NamedTemporaryFile(delete=False).name
         try:
-            # Load the image to predict
-            img = image.load_img(img_path, target_size=(224, 224))
-            x = image.img_to_array(img)
+            urllib.request.urlretrieve(img_path, temp_img_file)
+            img = Image.open(temp_img_file).resize((224, 224))
+            x = np.asarray(img, dtype=np.float32)
             x = np.expand_dims(x, axis=0)
             x /= 255
 
             # Make the prediction
             prediction = image_model.predict(x)
-            if 'filepath' not in request.form and os.path.exists(f"./uploads/{file.filename}"):
-                os.remove(f"uploads/{file.filename}")
             print(prediction)
+
             if prediction < 0.5:
                 return jsonify({"message": "Human Generated"})
             else:
@@ -212,6 +263,10 @@ def upload():
         except Exception as e:
             print(e)
             return jsonify({"error": str(e)}), 500
+        finally:
+            # Clean up the temporary file
+            if os.path.exists(temp_img_file):
+                os.remove(temp_img_file)
     else:
         return jsonify({"error": "Unexpected error occurred."}), 500
 

@@ -10,3 +10,4 @@ joblib
 numpy
 moviepy
 requests
+boto3
