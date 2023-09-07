@@ -11,3 +11,4 @@ numpy
 moviepy
 requests
 boto3
+gevent
